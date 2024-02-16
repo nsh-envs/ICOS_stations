@@ -423,16 +423,10 @@ for stati in range(nstat):
         file_count += 1
 
     # Save fig and make sure plots are not shown with plt.close()
+    plt.legend()
     plt.savefig('Plots/'+stations['Code'][stati]+'_tracers')
     plt.close()
 
-
-# Format testing
-a=-0.3
-print(f'formatted number: {a:+013.07f}')
-print(f'formatted number: {a+356: 013.07f}')
-print(f'formatted number: {+4235.56:013.07f}')
-print('formatted number: {:013.07f}'.format(3.09405))
 
 
 plt.figure(figsize=(12,7))
