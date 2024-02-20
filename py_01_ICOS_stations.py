@@ -10,29 +10,65 @@
 ## Import libraries, often used libraries are included but commented out
 import numpy as np
 import matplotlib.pyplot as plt
+import icoscp
+
 import seaborn as sb
-import pandas as pd
-import datetime as dt
-import os
-
-# import icoscp # ICOS module containing data?? ¯\_(ツ)_/¯
 # import numpy as np
+import pandas as pd
 # import xarray as xr
+import datetime as dt
 
-# set the theme with seaborn.
 sb.set_theme()
 
-## Defining the stations dictionary:
+namelist = ['Kresin',
+                     'Station Nord',
+                     'Pallas',
+                     'Puijo',
+                     'Hyytiala',
+                     'Uto',
+                     'Observatoire Perenne',
+                     'Puy de Dome',
+                     'La Reunion',
+                     'Saclay',
+                     'Trainou',
+                     'Gartow',
+                     'Helgoland',
+                     'Hohenpeissenberg',
+                     'Julich',
+                     'Karlsruhe',
+                     'Lindenberg',
+                     'Ochsenkopf',
+                     'Schauinsland',
+                     'Steinkimmen',
+                     'Torfhaus',
+                     'Westerland',
+                     'Zugspitze',
+                     'Monte Cimone',
+                     'Ispra',
+                     'Lampedusa',
+                     'Plateau Rosa',
+                     'Cabauw',
+                     'Lutjewad',
+                     'Birkenes',
+                     'Zeppelin',
+                     'Izana',
+                     'Hyltemossa',
+                     'Norunda',
+                     'Svartberget',
+                     'Jungfraujoch',
+                     'Ridge Hill',
+                     'Weybourne',
+                ]
+## Output switch
+plotout = False
+writeout = True
+## stations dictionary:
 #
-# NOTE: Next time acess all data/information from the Names and use those as keys.
-
 # Number of stations: 38
 nstat = 38
 # Number of data files: 91
 nfile = 91
-
-# NOTE dictionary ends at line 327
-
+#
 # Description:
 # Name: Name of station.
 # Code: Short 3 character code for the station.
@@ -44,8 +80,8 @@ nfile = 91
 # STR: 3 string components that wraps 'Code' and 'Height'.
 #      'ICOS_ATC_L2_L2-2023.1_{stations['Code'][i]}_{stations['Height'][i][j]}_CTS_CO2'
 # Path: The path to the Data directory for the ICOS stations data.
-
-stations = {'Name': ['Kresin',
+#
+stat_idx = {'Name': ['Kresin',
                      'Station Nord',
                      'Pallas',
                      'Puijo',
@@ -126,43 +162,43 @@ stations = {'Name': ['Kresin',
                 ],
 
             'Height_ordered': [[10.0, 50.0, 125.0, 250.0],
-                               [20.0, 50.0, 85.0],
-                               [12.0],
-                               [47.0,84.0],
-                               [16.8, 67.2, 125.0],
-                               [57.0],
-                               [10.0, 50.0, 120.0],
-                               [10.0],
-                               [6.0],
-                               [15.0, 60.0, 100.0],
-                               [5.0, 50.0, 100.0, 180.0],
-                               [30.0, 60.0, 132.0, 216.0, 341.0],
-                               [110.0],
-                               [50.0, 93.0, 131.0],
-                               [50.0, 80.0, 120.0],
-                               [30.0, 60.0, 100.0, 200.0],
-                               [2.5, 10.0, 40.0, 98.0],
-                               [23.0, 90.0, 163.0],
-                               [12.0, 35.0],
-                               [32.0, 82.0, 127.0, 187.0, 252.0],
-                               [10.0, 76.0, 110.0, 147.0],
-                               [14.0],
-                               [3.0],
-                               [8.0],
-                               [40.0, 60.0, 100.0],
-                               [8.0],
-                               [10.0],
-                               [27.0, 67.0, 127.0, 207.0],
-                               [60.0],
-                               [15.0, 50.0, 75.0],
-                               [15.0],
-                               [29.0],
-                               [30.0, 70.0, 150.0],
-                               [32.0, 58.0, 100.0],
-                               [35.0, 85.0, 150.0],
-                               [13.9],
-                               [45.0, 90.0],
-                               [10.0],
+                       	       [20.0, 50.0, 85.0],
+                       	       [12.0],
+                       	       [47.0,84.0],
+                       	       [16.8, 67.2, 125.0],
+                       	       [57.0],
+                       	       [10.0, 50.0, 120.0],
+                       	       [10.0],
+                       	       [6.0],
+                       	       [15.0, 60.0, 100.0],
+                       	       [5.0, 50.0, 100.0, 180.0],
+                       	       [30.0, 60.0, 132.0, 216.0, 341.0],
+                       	       [110.0],
+                       	       [50.0, 93.0, 131.0],
+                       	       [50.0, 80.0, 120.0],
+                       	       [30.0, 60.0, 100.0, 200.0],
+                       	       [2.5, 10.0, 40.0, 98.0],
+                       	       [23.0, 90.0, 163.0],
+                       	       [12.0, 35.0],
+                       	       [32.0, 82.0, 127.0, 187.0, 252.0],
+                       	       [10.0, 76.0, 110.0, 147.0],
+                       	       [14.0],
+                       	       [3.0],
+                       	       [8.0],
+                       	       [40.0, 60.0, 100.0],
+                       	       [8.0],
+                       	       [10.0],
+                       	       [27.0, 67.0, 127.0, 207.0],
+                       	       [60.0],
+                       	       [15.0, 50.0, 75.0],
+                       	       [15.0],
+                       	       [29.0],
+                       	       [30.0, 70.0, 150.0],
+                       	       [32.0, 58.0, 100.0],
+                       	       [35.0, 85.0, 150.0],
+                       	       [13.9],
+                       	       [45.0, 90.0],
+                       	       [10.0],
                 ],
             
             'Height': [10.0, 50.0, 125.0, 250.0,
@@ -322,114 +358,147 @@ stations = {'Name': ['Kresin',
             'Path_dmu' : '/home/nsh/Documents/Data/ICOS/',
 
             'Index_stat' : np.arange(nstat),
-
-            'Index' : np.arange(nfile),
     }
 
 # Print counts
-# print('Name length:', len(stations['Name']))
-# print('Code length:', len(stations['Code']))
-# print('Height length:', len(stations['Height']))
-# print('Country length:', len(stations['Country']))
-# print('Number of files:', len(stations['File']))
+# print('Name length:', len(stat_idx['Name']))
+# print('Code length:', len(stat_idx['Code']))
+# print('Height length:', len(stat_idx['Height']))
+# print('Country length:', len(stat_idx['Country']))
+# print('Number of files:', len(stat_idx['File']))
 
-# Header for the csv files downloaded from ICOS.
+def get_number(ln, fp, lat_lon_alt):
+    # open file for reading (default)
+    f = open(fp)
+    # read the content of the file opened 
+    content = f.readlines()[ln]
+    # read specific lines from the file 
+    num = 1
+    out = ''
+    if lat_lon_alt == 0:
+        st = 12
+    elif lat_lon_alt == 1:
+        st = 13
+    elif lat_lon_alt == 2:
+        st = 12
+    
+    for char in content[st:]:
+        if char == ' ':
+            num = 0
+        if num == 1:
+            out += char
+    return float(out)
+    
+
+stations = {}
+pf = 0
+for i in range(len(stat_idx['Name'])):
+    filepath = stat_idx['Path_envs']+stat_idx['File'][pf]
+    lat = get_number(13, filepath, lat_lon_alt = 0)
+    lon = get_number(14, filepath, lat_lon_alt = 1)
+    alt = get_number(15, filepath, lat_lon_alt = 2)
+
+    hs = len(stat_idx['Height_ordered'][i])
+    stations[stat_idx['Name'][i]] = {'Code' : stat_idx['Code'][i],
+                                     'Index' : i,
+                                     'FileIndex' : [pf+j for j in range(hs)],
+                                     'Height' : stat_idx['Height_ordered'][i],
+                                     'Country' : stat_idx['Country'][i],
+                                     'Elevation' : alt,
+                                     'Location' : [lat, lon],
+                                    }
+    pf += hs
+
 dataframe_names = ['Site',
                    'SamplingHeight',
-                   'Year',
+        		   'Year',
                    'Month',
-                   'Day',
+        		   'Day',
                    'Hour',
-                   'Minute',
+        		   'Minute',
                    'DecimalDate',
-                   'co2',
+        		   'co2',
                    'Stdev',
-                   'NbPoints',
+        		   'NbPoints',
                    'Flag',
-                   'InstrumentId',
+        		   'InstrumentId',
                    'QualityId',
-                   'LTR',
+        		   'LTR',
                    'CMR',
-                   'STTB',
+        		   'STTB',
                    'QcBias',
-                   'QcBiasUncertainty',
-                   'co2-WithoutSpikes',
-                   'Stdev-WithoutSpikes',
-                   'NbPoints-WithoutSpikes',
-              ]
+        		   'QcBiasUncertainty',
+        		   'co2-WithoutSpikes',
+        		   'Stdev-WithoutSpikes',
+        		   'NbPoints-WithoutSpikes',
+        		  ]
 
-# Set path depending on pc:
-cwd = os.path.abspath(os.getcwd())
-if cwd == '/home/niehvi/Documents/Python/ICOS_stations':
-    PATH = stations['PATH_dmi']
-elif cwd == '/home/niels/Documents/Python/ICOS_stations':
-    PATH = stations['PATH_envs']
-elif cwd == '/home/nsh/Documents/python/ICOS_stations':
-    PATH == stations['PATH_dmu']
-
-pd.read_csv(PATH+stations['File'][0], sep=";", header=44, names=dataframe_names).head()
-
-dt.datetime(year=df['Year'].values[0],
-            month=df['Month'].values[0],
-            day=df['Day'].values[0],
-            hour=df['Hour'].values[0],
-        )
-
-## Plotting the datafiles in seperate figures.
-#
-# Plots are produced with different heights in the same plot
-#
-# Initiate concentration and time array:
-#
-conc_data = np.zeros((91,70000))-999.99
-time_data = np.zeros((91,70000))-999.99
-
-# Create combined concentration and time mask.
-# concentration mask filters out when the station is not measuring.
-# Time mask filters out data from before 2022.
-#
-mask_limit = [0.0, 2022.0] # conc, time
-
-# Set file counter
-file_count = 0
-
-for stati in range(nstat):
-    # Initiate figure and set title and axis labels.
-    plt.figure(stati, figsize=(12,7))
-    plt.title(stations['Name'][stati]+' tracers')
-    plt.xlabel('Decimal Time')
-    plt.ylabel('Concentration [ppmv]')
+# pd.read_csv(stations['Path_dmi']+stations['File'][0], sep=";", header=44, names=dataframe_names).head()
+# dt.datetime(year=df['Year'].values[0], month=df['Month'].values[0], day=df['Day'].values[0], hour=df['Hour'].values[0])
+## Plotting output:
+def create_plots():
+    # Initiate concentration and time array:
+    conc_data = np.zeros((91,70000))-999.99
+    time_data = np.zeros((91,70000))-999.99
     
-    for height in stations['Height_ordered'][stati]:
-        # Import csv with pandas to dataframe
-        df = pd.read_csv(stations['Path_envs']+stations['File'][file_count], sep=';', header=44, names=dataframe_names)
+    mask_limit = [0.0, 2022.0] # conc, time
+    
+    file_count = 0
+    
+    for stati in range(nstat):
+        plt.figure(stati, figsize=(12,7))
+        plt.title(stations['Name'][stati]+" tracers")
+        plt.xlabel("Decimal Time")
+        plt.ylabel("Concentration [ppmv]")
         
-        # Save values in temporary files.
-        time_tmp = df['DecimalDate'].values
-        conc_tmp = df['co2'].values
-        size_tmp = conc_tmp.size
-        
-        # Write to main array.
-        time_data[file_count,:size_tmp] = df['DecimalDate'].values
-        conc_data[file_count,:size_tmp] = df['co2'].values
-        
-        # Apply mask.
-        mask = np.array([True if x > mask_limit[0] and y > mask_limit[1] else False for x,y in zip(conc_tmp,time_tmp) ])
+        for height in stations['Height_ordered'][stati]:
+            # Import csv with pandas to dataframe
+            df = pd.read_csv(stations['Path_envs']+stations['File'][file_count], sep=";", header=44, names=dataframe_names)
+            
+            time_tmp = df['DecimalDate'].values
+            conc_tmp = df['co2'].values
+            size_tmp = conc_tmp.size
+            
+            time_data[file_count,:size_tmp] = df['DecimalDate'].values
+            conc_data[file_count,:size_tmp] = df['co2'].values
+            
+            mask = np.array([True if x > mask_limit[0] and y > mask_limit[1] else False for x,y in zip(conc_tmp,time_tmp) ])
+    
+            plt.plot(time_tmp[mask], conc_tmp[mask], label=f"height {stations['Height'][file_count]} m")
+            
+            file_count += 1
+    
+        plt.savefig("Plots/"+stations['Code'][stati]+"_tracers")
+        plt.close()
 
-        # plot (tmp) data.
-        plt.plot(time_tmp[mask], conc_tmp[mask], label=f'height {stations["Height"][file_count]} m')
-        
-        # Advance file counter
-        file_count += 1
+if plotout == True:
+    create_plots()
 
-    # Save fig and make sure plots are not shown with plt.close()
-    plt.legend()
-    plt.savefig('Plots/'+stations['Code'][stati]+'_tracers')
-    plt.close()
+# Format testing
+# a=-0.3
+# print(f'formatted number: {a: 13.07f}')
+# print(f'formatted number: {a+356: 013.07f}')
+# print(f'formatted number: {+4235.56:013.07f}')
+# print('formatted number: {:013.07f}'.format(3.09405))
+if plotout == True:
+    plt.figure(figsize=(12,7))
+    info = plt.hist(stat_idx['Height'], bins=np.arange(-5,350,10))
 
+def write_out_to_file(filename):
+    # Open file:
+    with open(filename, 'w', encoding='utf-8') as file:
+        # Longest name: 20
+        # Formatting strings:
+        file.write("Index Name                Code    Lat    Lon    Alt Country\n")
+        for i in range(nstat):
+            index = f'{stations[namelist[i]]["Index"] : 5d}'+' '
+            name = namelist[i]+((20-len(namelist[i]))+1)*' '
+            code = ((3-len(stations[namelist[i]]['Code'])))*' '+stations[namelist[i]]['Code']
+            lat = f'{stations[namelist[i]]["Location"][0] : 7.02f}'
+            lon = f'{stations[namelist[i]]["Location"][1] : 7.02f}'
+            alt = f'{stations[namelist[i]]["Elevation"] : 7.0f}'
+            ctr = ' '+stations[namelist[i]]['Country']
+            file.write(index+name+code+lat+lon+alt+ctr+'\n') 
 
-
-plt.figure(figsize=(12,7))
-plt.hist(stations['Height'], bins=np.arange(-5,350,10))
-
-
+if writeout == True:
+    write_out_to_file('stations_co2_nsh.dat')
