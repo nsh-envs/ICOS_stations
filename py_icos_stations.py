@@ -10,13 +10,14 @@
 ## Import libraries, often used libraries are included but commented out
 import numpy as np
 import matplotlib.pyplot as plt
-import icoscp
-
-import seaborn as sb
-# import numpy as np
 import pandas as pd
+import seaborn as sb
+import os
+
+# import datetime as dt
+# import icoscp
+# import numpy as np
 # import xarray as xr
-import datetime as dt
 
 sb.set_theme()
 
@@ -368,6 +369,10 @@ stat_idx = {'Name': ['Kresin',
 # print('Number of files:', len(stat_idx['File']))
 
 def get_number(ln, fp, lat_lon_alt):
+    """
+    Function that opens icos csv file and reads:
+        altitude/latitude/longitude
+    """
     # open file for reading (default)
     f = open(fp)
     # read the content of the file opened 
@@ -389,11 +394,16 @@ def get_number(ln, fp, lat_lon_alt):
             out += char
     return float(out)
     
+# Choose path depending on machine:
+if os.path.abspath(os.getcwd())[6:12] == 'niehvi':
+    path = stat_idx['Path_dmi']
+elif os.path.abspath(os.getcwd())[6:11] == 'niels':
+    path = stat_idx['Path_envs']
 
 stations = {}
 pf = 0
 for i in range(len(stat_idx['Name'])):
-    filepath = stat_idx['Path_envs']+stat_idx['File'][pf]
+    filepath = path+stat_idx['File'][pf]
     lat = get_number(13, filepath, lat_lon_alt = 0)
     lon = get_number(14, filepath, lat_lon_alt = 1)
     alt = get_number(15, filepath, lat_lon_alt = 2)
@@ -453,7 +463,7 @@ def create_plots():
         
         for height in stations['Height_ordered'][stati]:
             # Import csv with pandas to dataframe
-            df = pd.read_csv(stations['Path_envs']+stations['File'][file_count], sep=";", header=44, names=dataframe_names)
+            df = pd.read_csv(path+stations['File'][file_count], sep=";", header=44, names=dataframe_names)
             
             time_tmp = df['DecimalDate'].values
             conc_tmp = df['co2'].values
@@ -484,20 +494,22 @@ if plotout == True:
     plt.figure(figsize=(12,7))
     info = plt.hist(stat_idx['Height'], bins=np.arange(-5,350,10))
 
+# Longest station name: 20
+space = ' '
 def write_out_to_file(filename):
     # Open file:
     with open(filename, 'w', encoding='utf-8') as file:
-        # Longest name: 20
+
+        file.write("## Name                 Code Lat    Lon    Alt Country\n")
         # Formatting strings:
-        file.write("Index Name                Code    Lat    Lon    Alt Country\n")
         for i in range(nstat):
-            index = f'{stations[namelist[i]]["Index"] : 5d}'+' '
-            name = namelist[i]+((20-len(namelist[i]))+1)*' '
-            code = ((3-len(stations[namelist[i]]['Code'])))*' '+stations[namelist[i]]['Code']
-            lat = f'{stations[namelist[i]]["Location"][0] : 7.02f}'
-            lon = f'{stations[namelist[i]]["Location"][1] : 7.02f}'
-            alt = f'{stations[namelist[i]]["Elevation"] : 7.0f}'
-            ctr = ' '+stations[namelist[i]]['Country']
+            index = f'{stations[namelist[i]]["Index"] :2d}'
+            name = space+namelist[i]+((20-len(namelist[i])))*' '
+            code = space+((3-len(stations[namelist[i]]['Code'])))*space+stations[namelist[i]]['Code']
+            lat = space+f'{stations[namelist[i]]["Location"][0] : 6.02f}'
+            lon = space+f'{stations[namelist[i]]["Location"][1] : 6.02f}'
+            alt = space+f'{stations[namelist[i]]["Elevation"] :4.0f}'
+            ctr = space+stations[namelist[i]]['Country']
             file.write(index+name+code+lat+lon+alt+ctr+'\n') 
 
 if writeout == True:
