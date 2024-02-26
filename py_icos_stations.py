@@ -21,6 +21,15 @@ import os
 
 sb.set_theme()
 
+## Output switch
+#
+# plotout controls plots of tracers for 2023 to now. The figures are located in directory "Plots"
+plotout = True
+
+# writeout controls wether or not to write out a 'stations_co2_nsh.dat' file to load into DEHM picking
+# ICOS stations out to compare model data.
+writeout = True
+
 namelist = ['Kresin',
                      'Station Nord',
                      'Pallas',
@@ -60,9 +69,7 @@ namelist = ['Kresin',
                      'Ridge Hill',
                      'Weybourne',
                 ]
-## Output switch
-plotout = False
-writeout = True
+
 ## stations dictionary:
 #
 # Number of stations: 38
@@ -477,7 +484,8 @@ def create_plots():
             plt.plot(time_tmp[mask], conc_tmp[mask], label=f"height {stations['Height'][file_count]} m")
             
             file_count += 1
-    
+
+        plt.legend()
         plt.savefig("Plots/"+stations['Code'][stati]+"_tracers")
         plt.close()
 
