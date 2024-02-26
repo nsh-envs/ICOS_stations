@@ -30,46 +30,6 @@ plotout = True
 # ICOS stations out to compare model data.
 writeout = True
 
-namelist = ['Kresin',
-                     'Station Nord',
-                     'Pallas',
-                     'Puijo',
-                     'Hyytiala',
-                     'Uto',
-                     'Observatoire Perenne',
-                     'Puy de Dome',
-                     'La Reunion',
-                     'Saclay',
-                     'Trainou',
-                     'Gartow',
-                     'Helgoland',
-                     'Hohenpeissenberg',
-                     'Julich',
-                     'Karlsruhe',
-                     'Lindenberg',
-                     'Ochsenkopf',
-                     'Schauinsland',
-                     'Steinkimmen',
-                     'Torfhaus',
-                     'Westerland',
-                     'Zugspitze',
-                     'Monte Cimone',
-                     'Ispra',
-                     'Lampedusa',
-                     'Plateau Rosa',
-                     'Cabauw',
-                     'Lutjewad',
-                     'Birkenes',
-                     'Zeppelin',
-                     'Izana',
-                     'Hyltemossa',
-                     'Norunda',
-                     'Svartberget',
-                     'Jungfraujoch',
-                     'Ridge Hill',
-                     'Weybourne',
-                ]
-
 ## stations dictionary:
 #
 # Number of stations: 38
@@ -511,13 +471,13 @@ def write_out_to_file(filename):
         file.write("## Name                 Code Lat    Lon    Alt Country\n")
         # Formatting strings:
         for i in range(nstat):
-            index = f'{stations[namelist[i]]["Index"] :2d}'
-            name = space+namelist[i]+((20-len(namelist[i])))*' '
-            code = space+((3-len(stations[namelist[i]]['Code'])))*space+stations[namelist[i]]['Code']
-            lat = space+f'{stations[namelist[i]]["Location"][0] : 6.02f}'
-            lon = space+f'{stations[namelist[i]]["Location"][1] : 6.02f}'
-            alt = space+f'{stations[namelist[i]]["Elevation"] :4.0f}'
-            ctr = space+stations[namelist[i]]['Country']
+            index = f'{stations[stat_idx['Names'][i]]["Index"] :2d}'
+            name = space+stat_idx['Names'][i]+((20-len(stat_idx['Names'][i])))*' '
+            code = space+((3-len(stations[stat_idx['Names'][i]]['Code'])))*space+stations[stat_idx['Names'][i]]['Code']
+            lat = space+f'{stations[stat_idx['Names'][i]]["Location"][0] : 6.02f}'
+            lon = space+f'{stations[stat_idx['Names'][i]]["Location"][1] : 6.02f}'
+            alt = space+f'{stations[stat_idx['Names'][i]]["Elevation"] :4.0f}'
+            ctr = space+stations[stat_idx['Names'][i]]['Country']
             file.write(index+name+code+lat+lon+alt+ctr+'\n') 
 
 if writeout == True:
