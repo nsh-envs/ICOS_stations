@@ -46,7 +46,7 @@ nfile = 91
 # Measurements: 
 # File: File name for the stations data files.
 # STR: 3 string components that wraps 'Code' and 'Height'.
-#      'ICOS_ATC_L2_L2-2023.1_{stations['Code'][i]}_{stations['Height'][i][j]}_CTS_CO2'
+#      'ICOS_ATC_L2_L2-2023.1_{stat_idx['Code'][i]}_{stat_idx['Height_ordered'][i][j]}_CTS_CO2'
 # Path: The path to the Data directory for the ICOS stations data.
 #
 stat_idx = {'Name': ['Kresin',
@@ -410,7 +410,7 @@ dataframe_names = ['Site',
         		   'NbPoints-WithoutSpikes',
         		  ]
 
-# pd.read_csv(stations['Path_dmi']+stations['File'][0], sep=";", header=44, names=dataframe_names).head()
+# pd.read_csv(stat_idx['Path_dmi']+stat_idx['File'][0], sep=";", header=44, names=dataframe_names).head()
 # dt.datetime(year=df['Year'].values[0], month=df['Month'].values[0], day=df['Day'].values[0], hour=df['Hour'].values[0])
 ## Plotting output:
 def create_plots():
@@ -424,13 +424,13 @@ def create_plots():
     
     for stati in range(nstat):
         plt.figure(stati, figsize=(12,7))
-        plt.title(stations['Name'][stati]+" tracers")
+        plt.title(stat_idx['Name'][stati]+" tracers")
         plt.xlabel("Decimal Time")
         plt.ylabel("Concentration [ppmv]")
         
-        for height in stations['Height_ordered'][stati]:
+        for height in stat_idx['Height_ordered'][stati]:
             # Import csv with pandas to dataframe
-            df = pd.read_csv(path+stations['File'][file_count], sep=";", header=44, names=dataframe_names)
+            df = pd.read_csv(path+stat_idx['File'][file_count], sep=";", header=44, names=dataframe_names)
             
             time_tmp = df['DecimalDate'].values
             conc_tmp = df['co2'].values
@@ -441,12 +441,12 @@ def create_plots():
             
             mask = np.array([True if x > mask_limit[0] and y > mask_limit[1] else False for x,y in zip(conc_tmp,time_tmp) ])
     
-            plt.plot(time_tmp[mask], conc_tmp[mask], label=f"height {stations['Height'][file_count]} m")
+            plt.plot(time_tmp[mask], conc_tmp[mask], label=f"height {stat_idx['Height'][file_count]} m")
             
             file_count += 1
 
         plt.legend()
-        plt.savefig("Plots/"+stations['Code'][stati]+"_tracers")
+        plt.savefig("Plots/"+stat_idx['Code'][stati]+"_tracers")
         plt.close()
 
 if plotout == True:
@@ -468,16 +468,16 @@ def write_out_to_file(filename):
     # Open file:
     with open(filename, 'w', encoding='utf-8') as file:
 
-        file.write("## Name                 Code Lat    Lon    Alt Country\n")
+        file.write("ii Name                 Code Lat    Lon    Alt Country\n")
         # Formatting strings:
         for i in range(nstat):
-            index = f'{stations[stat_idx['Names'][i]]["Index"] :2d}'
-            name = space+stat_idx['Names'][i]+((20-len(stat_idx['Names'][i])))*' '
-            code = space+((3-len(stations[stat_idx['Names'][i]]['Code'])))*space+stations[stat_idx['Names'][i]]['Code']
-            lat = space+f'{stations[stat_idx['Names'][i]]["Location"][0] : 6.02f}'
-            lon = space+f'{stations[stat_idx['Names'][i]]["Location"][1] : 6.02f}'
-            alt = space+f'{stations[stat_idx['Names'][i]]["Elevation"] :4.0f}'
-            ctr = space+stations[stat_idx['Names'][i]]['Country']
+            index = f'{stations[stat_idx["Name"][i]]["Index"] :2d}'
+            name = space+stat_idx["Name"][i]+((20-len(stat_idx["Name"][i])))*' '
+            code = space+((3-len(stations[stat_idx["Name"][i]]['Code'])))*space+stations[stat_idx["Name"][i]]['Code']
+            lat = space+f'{stations[stat_idx["Name"][i]]["Location"][0] : 6.02f}'
+            lon = space+f'{stations[stat_idx["Name"][i]]["Location"][1] : 6.02f}'
+            alt = space+f'{stations[stat_idx["Name"][i]]["Elevation"] :4.0f}'
+            ctr = space+stations[stat_idx["Name"][i]]['Country']
             file.write(index+name+code+lat+lon+alt+ctr+'\n') 
 
 if writeout == True:
