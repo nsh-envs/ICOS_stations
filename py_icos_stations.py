@@ -1,3 +1,4 @@
+#!/bin/python3
 # Written for python 3.10.12
 # UTF8-encoding
 #
