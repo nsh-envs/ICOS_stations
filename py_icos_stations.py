@@ -472,7 +472,7 @@ def write_out_to_file(filename):
         file.write("ii Name                 Code Lat    Lon    Alt Country\n")
         # Formatting strings:
         for i in range(nstat):
-            index = f'{stations[stat_idx["Name"][i]]["Index"] :2d}'
+            index = f'{stations[stat_idx["Name"][i]]["Index"]+1 :2d}'
             name = space+stat_idx["Name"][i]+((20-len(stat_idx["Name"][i])))*' '
             code = space+((3-len(stations[stat_idx["Name"][i]]['Code'])))*space+stations[stat_idx["Name"][i]]['Code']
             lat = space+f'{stations[stat_idx["Name"][i]]["Location"][0] : 6.02f}'
