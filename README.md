@@ -20,4 +20,4 @@ This file contains an outdated version of the notebook converted to a regular '.
 This file is supposed to collect all functions in a class object to make an ICOS plotting library.
 
 ### stations\_namelist.txt
-Names for the particular stations used.
+Names for the particular stations used from ICOS.
