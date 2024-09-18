@@ -6,3 +6,5 @@
 # test/ would ignore any directory called test in cwd.
 
 Plots/
+.ipynb_checkpoints/
+
