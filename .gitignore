@@ -1,0 +1,12 @@
+# .gitignore for ICOS_stations git(hub) project.
+# .gitignore ignores specific files when using git add --all. 
+#
+# test would ignore all directories and files with 'test' in them.
+# Path/test would ignore the file test at path
+# test/ would ignore any directory called test in cwd.
+
+Plots/
+plots/
+.ipynb_checkpoints/
+*.png
+
